@@ -1,0 +1,67 @@
+{
+  "name": "react-random-loading-indicator",
+  "version": "1.0.0",
+  "description": "A React component for random loading indicators.",
+  "keywords": [
+    "react",
+    "loading",
+    "indicator",
+    "spinner",
+    "random",
+    "component"
+  ],
+  "author": "Qi Xi <me@imxiqi.com> (https://imxiqi.com)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xiqi/react-random-loading-indicator.git"
+  },
+  "homepage": "https://github.com/xiqi/react-random-loading-indicator",
+  "bugs": {
+    "url": "https://github.com/xiqi/react-random-loading-indicator/issues"
+  },
+  "license": "MIT",
+  "type": "module",
+  "main": "dist/index.cjs",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "previewer": "vite previewer --config previewer/vite.config.ts",
+    "previewer:build": "vite build previewer --config previewer/vite.config.ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run build"
+  },
+  "peerDependencies": {
+    "react": ">=18",
+    "react-dom": ">=18"
+  },
+  "devDependencies": {
+    "@testing-library/react": "^16.3.2",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^5.1.4",
+    "jsdom": "^28.1.0",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.1",
+    "vitest": "^4.0.18"
+  }
+}
