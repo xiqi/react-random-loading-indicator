@@ -205,9 +205,37 @@ function Field({ propName, children }: FieldProps) {
 
 function parseSources(input: string): string[] {
   return input
+    .replace(/\\r\\n/g, '\n')
+    .replace(/\\n/g, '\n')
+    .replace(/\\r/g, '\n')
     .split(/\r?\n|,/)
     .map((item) => item.trim())
     .filter(Boolean);
+}
+
+function parseEscapedText(input: string): string {
+  return input
+    .replace(/\\r\\n/g, '\n')
+    .replace(/\\n/g, '\n')
+    .replace(/\\r/g, '\r')
+    .replace(/\\t/g, '\t')
+    .replace(/\\'/g, "'")
+    .replace(/\\"/g, '"')
+    .replace(/\\\\/g, '\\');
+}
+
+function toParsedJsonObject(value: unknown): ParsedJsonObject {
+  if (value === null || typeof value !== 'object' || Array.isArray(value)) {
+    return {
+      value: undefined,
+      error: 'Must be a JSON object'
+    };
+  }
+
+  return {
+    value: value as JsonObject,
+    error: null
+  };
 }
 
 function parseJsonObject(input: string): ParsedJsonObject {
@@ -221,33 +249,29 @@ function parseJsonObject(input: string): ParsedJsonObject {
   }
 
   try {
-    const parsed = JSON.parse(trimmed);
+    return toParsedJsonObject(JSON.parse(trimmed));
+  } catch {}
 
-    if (parsed === null || typeof parsed !== 'object' || Array.isArray(parsed)) {
-      return {
-        value: undefined,
-        error: 'Must be a JSON object'
-      };
-    }
+  const escapedTextParsed = parseEscapedText(trimmed);
 
-    return {
-      value: parsed as JsonObject,
-      error: null
-    };
-  } catch {
-    return {
-      value: undefined,
-      error: 'Invalid JSON'
-    };
+  if (escapedTextParsed !== trimmed) {
+    try {
+      return toParsedJsonObject(JSON.parse(escapedTextParsed));
+    } catch {}
   }
-}
 
-function escapeSingleQuotes(value: string): string {
-  return value.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+  return {
+    value: undefined,
+    error: 'Invalid JSON'
+  };
 }
 
 function escapeDoubleQuotes(value: string): string {
-  return value.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+  return JSON.stringify(value).slice(1, -1);
+}
+
+function escapeSingleQuotes(value: string): string {
+  return escapeDoubleQuotes(value).replace(/'/g, "\\'");
 }
 
 function stringifyObjectForCode(value: JsonObject): string {
@@ -505,7 +529,9 @@ export function App() {
                 value={resourceInput}
                 onChange={(event) => setResourceInput(event.target.value)}
                 spellCheck={false}
-                placeholder={'/assets/1.svg\\n/assets/2.svg\\nhttps://cdn.example.com/loader.gif'}
+                placeholder={`/assets/1.svg
+/assets/2.svg
+https://cdn.example.com/loader.gif`}
               />
             </Field>
           </section>
@@ -673,7 +699,9 @@ export function App() {
                     value={containerStyleInput}
                     onChange={(event) => setContainerStyleInput(event.target.value)}
                     spellCheck={false}
-                    placeholder={'{\\n  "padding": 8\\n}'}
+                    placeholder={`{
+  "padding": 8
+}`}
                   />
                   {parsedContainerStyle.error ? (
                     <p className="input-error">style: {parsedContainerStyle.error}</p>
@@ -685,7 +713,10 @@ export function App() {
                     value={sourceStyleInput}
                     onChange={(event) => setSourceStyleInput(event.target.value)}
                     spellCheck={false}
-                    placeholder={'{\\n  "width": 96,\\n  "height": 96\\n}'}
+                    placeholder={`{
+  "width": 96,
+  "height": 96
+}`}
                   />
                   {parsedSourceStyle.error ? (
                     <p className="input-error">sourceStyle: {parsedSourceStyle.error}</p>
