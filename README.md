@@ -80,6 +80,8 @@ For full props, use the previewer.
 
 ## Previewer (Recommended)
 
+https://github.com/user-attachments/assets/6598f97a-10a7-4601-aff9-1d54d3bdbaad
+
 ```bash
 npm run previewer
 ```
