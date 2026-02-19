@@ -7,7 +7,7 @@ import {
   type RandomStrategy
 } from '../../src';
 
-const defaultResourceInput = Array.from({ length: 26 }, (_, index) => `/assets/${index + 1}.svg`).join(
+const defaultResourceInput = ['/assets/1.svg', '/assets/2.svg', '/assets/3.svg', '/assets/4.svg', '/assets/5.svg', '/assets/6.svg'].join(
   '\n'
 );
 
@@ -255,9 +255,7 @@ function stringifyObjectForCode(value: JsonObject): string {
 }
 
 function buildCodeSnippet(config: BuildCodeSnippetConfig): string {
-  const sourceLines = (config.sources.length > 0 ? config.sources : ['/assets/1.svg'])
-    .map((source) => `  '${escapeSingleQuotes(source)}',`)
-    .join('\n');
+  const sourceLines = config.sources.map((source) => `  '${escapeSingleQuotes(source)}',`).join('\n');
 
   const setupLines: string[] = [];
 
